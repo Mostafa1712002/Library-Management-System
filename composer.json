@@ -14,6 +14,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "shiftonelabs/laravel-cascade-deletes": "^1.0",
         "spatie/laravel-medialibrary": "10.2.*"
     },
     "require-dev": {

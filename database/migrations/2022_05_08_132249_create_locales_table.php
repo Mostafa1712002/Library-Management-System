@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('locales', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('type')->default('user')->comment('can find users type in app\Enums\UserType.php');
-            $table->rememberToken();
+            $table->string('locale');
+            $table->text('title')->nullable();
+            $table->longText('description')->nullable();
+            $table->bigInteger('localizable_id');
+            $table->string('localizable_type');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('locales');
     }
 };

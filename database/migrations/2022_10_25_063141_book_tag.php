@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('book_tag', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('type')->default('user')->comment('can find users type in app\Enums\UserType.php');
-            $table->rememberToken();
+            $table->bigInteger('book_id')->unsigned();
+            $table->bigInteger('tag_id')->unsigned();
             $table->timestamps();
         });
     }
@@ -32,6 +28,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('book_tag');
+
     }
 };
