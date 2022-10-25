@@ -12,4 +12,10 @@ class MainController extends Controller
         return view('index');
     }
 
+
+    public function toggleLang($lang)
+    {
+        app()->setLocale($lang);
+        return view('index');
+    }
 }

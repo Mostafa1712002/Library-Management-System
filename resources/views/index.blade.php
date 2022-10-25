@@ -106,6 +106,13 @@
                             <a href="{{ route('register') }}" class="btn btn-primary my-2">Register</a>
                             @endif
                             @endauth
+                            @if(app()->getLocale() == 'ar')
+
+                            <a href="{{ route('toggle-lang','en') }}" class="btn btn-primary my-2">English</a>
+                            @else
+                            <a href="{{ route('toggle-lang','ar') }}" class="btn btn-primary my-2">العربيه</a>
+
+                            @endIf
                         </div>
                         @endif
 
@@ -114,11 +121,30 @@
             </div>
         </section>
 
+        <div class="row">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <p>
+                    @if (Route::has('login'))
+                    <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                        @auth
+                        @if(admin())
+                        <a href="{{ route('books.create') }}" class="btn btn-primary my-2">create book</a>
+                        @endIf
+                        @endIf
+                    </div>
+                    @endif
+                    @include('flash::message')
+
+                </p>
+            </div>
+        </div>
+
+
         <div class="album py-5 bg-light">
             <div class="container">
 
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    @foreach($books->with('media','locales')->get() as $book)
+                    @foreach($books->with('media','locales')->orderBy('updated_at','desc')->get() as $book)
 
                     <div class="col">
                         <div class="card shadow-sm">
@@ -126,14 +152,16 @@
                             {{ $book->files[0] }}
 
                             <div class="card-body">
-                            {{ dd($book->locales )}}
-                                <p class="card-text">{{ collect($book->locales)->where('locale',app()->getLocale()->locale)->first()->description }}</p>
+                                <p class="card-text font-weight-bold ">{{ collect($book->locales)->where('locale',app()->getLocale())->first()->title  }}</p>
+                                <b>{{ $book->author }}</b>
+                                <p class="card-text">{{ collect($book->locales)->where('locale',app()->getLocale())->first()->description }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                    </div>
-                                    <small class="text-muted">9 mins</small>
+                                        @if(!admin())
+                                        <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ route('orders.create') }}">{{ __("message.borrow") }}</a>
+                                        @endIf
+                                        </div>
+                                    <small class="text-muted">{{ $book->isbn }}</small>
                                 </div>
                             </div>
                         </div>
@@ -145,6 +173,20 @@
         </div>
 
     </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <footer class="text-muted py-5">
         <div class="container">

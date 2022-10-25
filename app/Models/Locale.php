@@ -13,6 +13,6 @@ class Locale extends Model
 
     public static function findBySlug($name)
     {
-        return static::where('name', $name)->get();
+        return static::where('title', $name)->get();
     }
 }

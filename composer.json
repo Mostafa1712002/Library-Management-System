@@ -11,9 +11,11 @@
         "php": "^8.0.2",
         "barryvdh/laravel-httpcache": "^0.3.10",
         "guzzlehttp/guzzle": "^7.2",
+        "laracasts/flash": "^3.2",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "laravelcollective/html": "^6.3",
         "shiftonelabs/laravel-cascade-deletes": "^1.0",
         "spatie/laravel-medialibrary": "10.2.*"
     },
@@ -33,7 +35,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -2,85 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use App\Models\Book;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $book;
+    public function __construct(Book $book)
+    {
+        $this->book = $book;
+    }
+
     public function index()
     {
-        //
+        $records = $this->book->orderBy("updated_at", "DESC")->get();
+        return view('books.index', compact('records'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('books.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreBookRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreBookRequest $request)
     {
-        //
+
+        $locales = [
+            'ar' => [
+                'title' => $request->title_ar,
+                'description' => $request->description_ar,
+            ],
+            'en' => [
+                'title' => $request->title_en,
+                'description' => $request->description_en,
+            ],
+        ];
+        DB::transaction(function () use ($request, $locales) {
+            $record = $this->book->create([
+                'slug' => generateSlug(getTitle($locales)),
+                'author' => $request->author,
+                'isbn' => $request->isbn,
+            ]);
+            foreach ($request->images as $image) {
+                uploadImage($record, $image);
+            }
+            $record->tags()->attach($request->tags);
+
+            setLocales($record, $locales, $record->id);
+            flash('Book created successfully')->success();
+        });
+        return to_route('index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Book $book)
+    public function edit($id)
     {
-        //
+
+        $record = $this->book->findOrFail($id);
+        return view('books.edit', compact('record'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Book $book)
+    public function update(UpdateBookRequest $request, $id)
     {
-        //
+        return DB::transaction(function () use ($request, $id) {
+            $record = $this->book->findOrFail($id);
+
+            $record->update(array_filter($request->all()));
+
+            return to_route("books.index");
+        });
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateBookRequest  $request
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateBookRequest $request, Book $book)
+    public function destroy($id)
     {
-        //
-    }
+        $record = $this->book->findOrFail($id);
+        $record->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Book $book)
-    {
-        //
+        return response()->json(['success' => true], 200);
     }
 }
