@@ -21,7 +21,9 @@
             <div class="card-body">
                 {!! Form::open([ "method" => "post" , "route" => "books.store","enctype" => "multipart/form-data"]) !!}
                 @include('books.form')
+            
                 {!! Form::submit("create", ["class" => "btn btn-success"]) !!}
+
                 {!! Form::close() !!}
             </div>
 

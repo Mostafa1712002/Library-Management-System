@@ -159,33 +159,34 @@
                                     <div class="btn-group">
                                         @if(!admin())
                                         <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ route('orders.create') }}">{{ __("message.borrow") }}</a>
-                                        @endIf
+                                        @else
+                                        <div class="col-6">
+                                            <a href="{{ route('books.edit', $book->id) }}" class=" btn btn-success btn-md edit">
+                                                {{ __('message.edit') }}
+                                            </a>
                                         </div>
-                                    <small class="text-muted">{{ $book->isbn }}</small>
+                                            <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-md delete">
+                                                    {{ __('message.delete') }}
+                                                </button>
+                                            </form>
+
+                                            @endIf
+                                        </div>
+                                        <small class="text-muted">{{ $book->isbn }}</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
 
     </main>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <footer class="text-muted py-5">

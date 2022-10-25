@@ -33,8 +33,10 @@ class AgainCommand extends Command
         Artisan::call('storage:link');
         $this->info('Storage linked');
         Artisan::call('optimize:clear');
+        Artisan::call('httpcache:clear');
         $this->info('Optimized');
-        
+
+
         return 0;
     }
 }

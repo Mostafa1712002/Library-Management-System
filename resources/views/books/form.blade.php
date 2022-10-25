@@ -1,7 +1,7 @@
 <div class="form-group">
     {!! Form::label('title in English') !!}
     <span class="required-star">*</span>
-    {!! Form::text("title_en",null,["class" => "form-control"]) !!}
+    {!! Form::text("title_en",isset($record)? $record->locales()->where('locale','en')->first()->title :null,["class" => "form-control"]) !!}
     @error('title_en')
     <small style="display: block !important" class="invalid-feedback" role="alert">
         <strong>{{ $message }}</strong>
@@ -11,7 +11,7 @@
 <div class="form-group">
     {!! Form::label('title in Arabic') !!}
     <span class="required-star">*</span>
-    {!! Form::text("title_ar",null,["class" => "form-control"]) !!}
+    {!! Form::text("title_ar",isset($record)? $record->locales()->where('locale','ar')->first()->title :null,["class" => "form-control"]) !!}
     @error('title_ar')
     <small style="display: block !important" class="invalid-feedback" role="alert">
         <strong>{{ $message }}</strong>
@@ -38,7 +38,7 @@
 <div class="form-group">
     {!! Form::label('description in English') !!}
     <span class="required-star">*</span>
-    {!! Form::textarea("description_en",null,["class" => "form-control"]) !!}
+    {!! Form::textarea("description_en",isset($record)? $record->locales()->where('locale','en')->first()->description :null,["class" => "form-control"]) !!}
 
     @error("description_en")
     <small style="display: block !important" class="invalid-feedback" role="alert">
@@ -49,7 +49,7 @@
 <div class="form-group">
     {!! Form::label('description in Arabic') !!}
     <span class="required-star">*</span>
-    {!! Form::textarea("description_ar",null,["class" => "form-control"]) !!}
+    {!! Form::textarea("description_ar",isset($record)? $record->locales()->where('locale','ar')->first()->description :null,["class" => "form-control"]) !!}
     @error("description_ar")
     <small style="display: block !important" class="invalid-feedback" role="alert">
         <strong>{{ $message }}</strong>

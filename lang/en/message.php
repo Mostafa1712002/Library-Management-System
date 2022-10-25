@@ -14,4 +14,8 @@ return [
     "tags_required" => "The tags are required",
     "tags_array" => "The tags must be an array",
     "tags_exists" => "The tags must be exists",
+    'update' => 'Update',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+
 ];

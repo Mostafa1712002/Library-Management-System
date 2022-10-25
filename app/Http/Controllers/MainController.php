@@ -18,4 +18,14 @@ class MainController extends Controller
         app()->setLocale($lang);
         return view('index');
     }
+
+    public function destroyMedia($id)
+    {
+
+        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($id);
+        $media->delete();
+        flash('Media deleted successfully')->success();
+
+        return redirect()->back();
+    }
 }

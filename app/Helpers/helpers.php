@@ -62,11 +62,12 @@ function setLocales(Model $model, $locales, $id)
 
 function user()
 {
-    return auth()->user()->type == UserType::USER;
+
+    return   request()->user() ? request()->user()->type == UserType::USER : false;
 }
 
 
 function admin()
 {
-    return auth()->user()->type == UserType::ADMIN;
+    return   request()->user() ? request()->user()->type == UserType::ADMIN : false;
 }

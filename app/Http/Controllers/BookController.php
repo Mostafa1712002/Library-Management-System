@@ -17,11 +17,7 @@ class BookController extends Controller
         $this->book = $book;
     }
 
-    public function index()
-    {
-        $records = $this->book->orderBy("updated_at", "DESC")->get();
-        return view('books.index', compact('records'));
-    }
+
 
     public function create()
     {
@@ -67,20 +63,45 @@ class BookController extends Controller
 
     public function update(UpdateBookRequest $request, $id)
     {
-        return DB::transaction(function () use ($request, $id) {
+
+        $locales = [
+            'ar' => [
+                'title' => $request->title_ar,
+                'description' => $request->description_ar,
+            ],
+            'en' => [
+                'title' => $request->title_en,
+                'description' => $request->description_en,
+            ],
+        ];
+        DB::transaction(function () use ($request, $locales, $id) {
             $record = $this->book->findOrFail($id);
+            $this->book->update([
+                'slug' => generateSlug(getTitle($locales)),
+                'author' => $request->author,
+                'isbn' => $request->isbn,
+            ]);
+            if ($request->images) {
+                foreach ($request->images as $image) {
+                    uploadImage($record, $image);
+                }
+            }
+           
+            $record->tags()->attach($request->tags);
 
-            $record->update(array_filter($request->all()));
-
-            return to_route("books.index");
+            setLocales($record, $locales, $record->id);
+            flash('Book updated successfully')->success();
         });
+        $record = $this->book->findOrFail($id);
+
+        return view('books.edit', compact('record'));
     }
 
     public function destroy($id)
     {
         $record = $this->book->findOrFail($id);
         $record->delete();
-
-        return response()->json(['success' => true], 200);
+        flash('Book deleted successfully')->success();
+        return to_route('index');
     }
 }
