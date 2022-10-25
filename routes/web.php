@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Dashboard\MainController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MainController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,14 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Auth::routes();
 
-Route::group(['prefix' => 'admin', 'middleware' => "auth:web"], function () {
-
-    Route::controller(MainController::class)->group(function () {
-        Route::get('/', 'index');
-    });
-
-    // Route::resource('testimonials', \App\Http\Controllers\Dashboard\TestimonialController::class);
-
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
