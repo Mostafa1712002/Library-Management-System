@@ -52,11 +52,16 @@
                                                      document.getElementById('logout-form').submit();">
                               {{ __('message.logout') }}
                           </a>
+                          @if(app()->getLocale() == 'ar')
 
+                          <a class="dropdown-item" href="{{ route('toggle-lang','en') }}" "> English</a>
+                           @else
+                          <a  class=" dropdown-item" href="{{ route('toggle-lang','ar') }}" "> العربيه</a>
+                         @endIf
 
-                          <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                          <form id=" logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                               @csrf
-                          </form>
+                              </form>
                       </div>
                   </li>
                   @endguest
