@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 
@@ -32,6 +33,7 @@ Route::controller(MainController::class)->group(function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('books', BookController::class);
+    Route::resource('tags', TagController::class);
     Route::delete('media/{id}', [MainController::class, 'destroyMedia'])->name('media.destroy');
 
 

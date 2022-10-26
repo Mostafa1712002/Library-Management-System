@@ -83,6 +83,7 @@
                       @auth
                       @if(admin())
                       <a href="{{ route('books.create') }}" class="btn btn-primary my-2">create book</a>
+                      <a href="{{ route('tags.create') }}" class="btn btn-primary my-2">add tag</a>
                       @endIf
                       <a href="{{ route('orders.index') }}" class="btn btn-primary my-2">orders</a>
                       @endIf

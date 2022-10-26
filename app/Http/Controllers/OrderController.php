@@ -33,7 +33,12 @@ class OrderController extends Controller
     {
         $book = $this->book->findOrFail($id);
         $user =  auth()->user()->id;
-        $order = $this->order->where(['book_id' => $id, 'user_id' => $user])->where("status", "!=", \App\Enums\OrderStatus::DONE)->first();
+        $order = $this->order->where(function ($q) use ($id, $user) {
+            $q->where("status", "==", \App\Enums\OrderStatus::PENDING);
+            $q->where('book_id', $id);
+            $q->where('user_id', $user);
+        })->first();
+
         if ($order) {
             flash('You have already ordered this book')->error();
             return back();

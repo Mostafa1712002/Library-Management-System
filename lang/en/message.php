@@ -19,5 +19,7 @@ return [
     'delete' => 'Delete',
     'approve' => 'Approve',
     "reject" => "Reject",
-
+    "name_required" => "The name is required",
+    "name_unique" => "The name must be unique",
+    "added_successfully" => "Added successfully",
 ];

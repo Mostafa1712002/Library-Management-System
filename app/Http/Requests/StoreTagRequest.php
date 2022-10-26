@@ -13,7 +13,7 @@ class StoreTagRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,22 @@ class StoreTagRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "name" => "required|unique:tags,name",
+        ];
+    }
+
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, mixed>
+     */
+
+    public function messages()
+    {
+        return [
+            "name.required" => __("message.name_required"),
+            "name.unique" => __('message.name_unique'),
         ];
     }
 }
