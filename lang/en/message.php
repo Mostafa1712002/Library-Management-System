@@ -17,5 +17,7 @@ return [
     'update' => 'Update',
     'edit' => 'Edit',
     'delete' => 'Delete',
+    'approve' => 'Approve',
+    "reject" => "Reject",
 
 ];

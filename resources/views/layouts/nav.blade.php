@@ -64,3 +64,32 @@
           </div>
       </div>
   </nav>
+  <main>
+      <section class="py-5 text-center container">
+          <div class="row py-lg-5">
+              <div class="col-lg-6 col-md-8 mx-auto">
+                  <h1 class="fw-light">Library Management System</h1>
+                  <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+
+              </div>
+          </div>
+      </section>
+
+      <div class="row">
+          <div class="col-lg-6 col-md-8 mx-auto">
+              <p>
+                  @if (Route::has('login'))
+                  <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                      @auth
+                      @if(admin())
+                      <a href="{{ route('books.create') }}" class="btn btn-primary my-2">create book</a>
+                      @endIf
+                      <a href="{{ route('orders.index') }}" class="btn btn-primary my-2">orders</a>
+                      @endIf
+                  </div>
+                  @endif
+                  @include('flash::message')
+
+              </p>
+          </div>
+      </div>

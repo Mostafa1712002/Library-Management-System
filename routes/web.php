@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,17 @@ Route::controller(MainController::class)->group(function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('books', BookController::class);
-    Route::resource('orders', \App\Http\Controllers\OrderController::class);
-
     Route::delete('media/{id}', [MainController::class, 'destroyMedia'])->name('media.destroy');
+
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::group(['prefix' => 'orders'], function () {
+            Route::get('create/{id}', 'create')->name('orders.create');
+            Route::get("/all", 'index')->name('orders.index');
+            Route::patch('approve/{id}', 'approve')->name('orders.approve');
+            Route::patch('reject/{id}', 'reject')->name('orders.reject');
+            Route::patch('reserve/{id}', 'reserve')->name('orders.reserve');
+            Route::patch('confirm/{id}', 'confirm')->name('orders.confirm');
+        });
+    });
 });

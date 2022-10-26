@@ -2,85 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function __construct(\App\Models\Order $order, \App\Models\Book $book)
+    {
+        $this->order = $order;
+        $this->book = $book;
+    }
+
+
     public function index()
     {
-        //
+        $orders = $this->order->where(function ($q) {
+            if (user()) {
+                $q->where('user_id', auth()->user()->id);
+            }
+        })->get();
+
+        return view('orders.index', compact('orders'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function create($id)
     {
-        //
+        $book = $this->book->findOrFail($id);
+        $user =  auth()->user()->id;
+        $order = $this->order->where(['book_id' => $id, 'user_id' => $user])->where("status", "!=", \App\Enums\OrderStatus::DONE)->first();
+        if ($order) {
+            flash('You have already ordered this book')->error();
+            return back();
+        }
+        $order = $book->whereHas('orders', function ($q) {
+            $q->where('status', \App\Enums\OrderStatus::BORROWED);
+        })->first();
+
+        if ($order) {
+            flash('This book is already borrowed')->error();
+            return back();
+        }
+
+        $this->order->create([
+            'book_id' => $id,
+            'user_id' => $user,
+        ]);
+        flash('Order send successfully')->success();
+        return back();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreOrderRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreOrderRequest $request)
+
+    public function approve($id)
     {
-        //
+        $order = $this->order->findOrFail($id);
+        $order->update([
+            'status' => \App\Enums\OrderStatus::BORROWED,
+        ]);
+        flash('Order approved successfully')->success();
+        return back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
+
+    public function reject($id)
     {
-        //
+        $order = $this->order->findOrFail($id);
+        $order->update([
+            'status' => \App\Enums\OrderStatus::REJECTED,
+        ]);
+        flash('Order rejected successfully')->success();
+        return back();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Order $order)
+
+    public function reserve($id)
     {
-        //
+        $order = $this->order->findOrFail($id);
+        $order->update([
+            'status' => \App\Enums\OrderStatus::RESERVEREQUEST,
+        ]);
+        flash('Order reserved Request send successfully')->success();
+        return back();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateOrderRequest  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function confirm($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
+        $order = $this->order->findOrFail($id);
+        $order->update([
+            'status' => \App\Enums\OrderStatus::DONE,
+        ]);
+        flash('Order confirmed successfully')->success();
+        return back();
     }
 }

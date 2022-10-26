@@ -18,7 +18,7 @@ class Book extends Model implements \Spatie\MediaLibrary\HasMedia
         return $this->belongsToMany(Tag::class);
     }
 
-    public function order()
+    public function orders()
     {
         return $this->hasMany(Order::class);
     }
