@@ -1,141 +1,81 @@
-@extends('dashboard.layouts.master')
-@section('title')
-الاخبار | {{ config('app.name') }}
-@endsection
-@section('page-header')
-<div class="breadcrumb-header justify-content-between">
-    <div class="my-auto">
-        <div class="d-flex">
-            <h4 class="content-title mb-0 my-auto">الأخبار</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/عرض الأخبار </span>
+@extends('layouts.app')
+
+@section('content')
+<main>
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Library Management System</h1>
+                <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <p>
+                @if (Route::has('login'))
+                <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+                    @auth
+                    @if(admin())
+                    <a href="{{ route('books.create') }}" class="btn btn-primary my-2">create book</a>
+                    @endIf
+                    @endIf
+                </div>
+                @endif
+                @include('flash::message')
+
+            </p>
         </div>
     </div>
-</div>
-@endsection
-@section('content')
-<!-- row opened -->
-<b class="text-center ">
-    @include("flash::message")
-</b>
-<div class="row row-sm">
-    <div class="d-flex justify-content-center mt-2 mb-2">
-        <a type="button" href="{{ route('blogs.create') }}" style="color:white" class="btn-md btn  btn-primary">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            انشاء خبر جديد
-        </a>
-    </div>
-    <div class="col-xl-12">
-        <div class="card">
 
-            <div class="card-body">
-                <div class="table-responsive">
-                    <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <table class="table text-md-nowrap dataTable no-footer" id="example1" role="grid" aria-describedby="example1_info">
-                                    <thead>
-                                        <tr role="row">
-                                            <th>ID</th>
-                                            <th>العنوان</th>
-                                            <th>الصورة</th>
-                                            <th>التاريخ</th>
-                                            <th>الحالة</th>
-                                            <th>العمليات</th>
-                                        </tr>
-                                    </thead>
 
-                                    <tbody>
-                                        @foreach($records as $record)
-                                        <tr id="row{{ $record->id }}">
-                                            <td>{{ $record->id }}</td>
-                                            <td>
-                                                <p>
-                                                    {{ $record->title }}
-                                                </p>
-                                            </td>
-                                            <td><img src="{{ $record->image["url"] }}" alt="{{ $record->title }}" width="100"></td>
-                                            <td>{{ $record->published_at }}</td>
-                                            <td>
-                                                @if($record->status == "published")
-                                                <span class="badge badge-md badge-success ">مفعل</span>
-                                                @else
-                                                <span class="badge badge-md badge-danger">غير مفعل</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('blogs.edit', $record->id) }}" class="btn btn-md btn-primary">تعديل</a>
-                                                <a class="btn btn-md destroy btn-danger" data-route="{{ route("blogs.destroy",$record->id) }}" data-token="{{ csrf_token() }}" data-row="#row{{ $record->id }}">حذف</a>
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                @foreach($books as $book)
 
-                                            </td>
-                                        </tr>
+                <div class="col">
+                    <div class="card shadow-sm">
 
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                        {{ $book->files[0] }}
+
+                        <div class="card-body">
+                            <p class="card-text font-weight-bold ">{{ collect($book->locales)->where('locale',app()->getLocale())->first()->title  }}</p>
+                            <b>{{ $book->author }}</b>
+                            <p class="card-text">{{ collect($book->locales)->where('locale',app()->getLocale())->first()->description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    @if(!admin())
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ route('orders.create') }}">{{ __("message.borrow") }}</a>
+                                    @else
+                                    <div class="col-6">
+                                        <a href="{{ route('books.edit', $book->id) }}" class=" btn btn-success btn-md edit">
+                                            {{ __('message.edit') }}
+                                        </a>
+                                    </div>
+                                    <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-md delete">
+                                            {{ __('message.delete') }}
+                                        </button>
+                                    </form>
+
+                                    @endIf
+                                </div>
+                                <small class="text-muted">{{ $book->isbn }}</small>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                @endforeach
             </div>
         </div>
     </div>
 
+</main>
 
-</div>
-<!-- /row -->
-</div>
-<!-- Container closed -->
-</div>
-<!-- main-content closed -->
 @endsection
-@push('js')
-<script>
-    $(function() {
-        $(document).on('click', '.destroy', function() {
-
-            var route = $(this).data('route');
-            var token = $(this).data('token');
-            var $row = $(this).data("row");
-
-            $.confirm({
-                title: 'تأكيد عملية الحذف'
-                , icon: 'fa fa-spinner fa-spin'
-                , content: 'هل انت منأكد انك تريد الحذف'
-                , type: 'red'
-                , closeAnimation: 'rotateXR'
-                , buttons: {
-                    yes: {
-                        text: 'نعم'
-                        , btnClass: 'btn-blue'
-                        , action: function() {
-                            $.ajax({
-                                url: route
-                                , type: 'post'
-                                , data: {
-                                    _method: 'delete'
-                                    , _token: token
-                                }
-                                , dataType: 'json'
-                                , success: function(data) {
-                                    if (data.success) {
-                                        $($row).remove();
-                                        Swal.fire("تم الحذف", " ", "success");
-                                    }
-                                }
-                                , error: function() {
-                                    Swal.fire("حدث خطأ الرجاء المحاوله مره اخري", "", "error")
-                                }
-                            });
-                        }
-                    }
-                    , no: {
-                        text: 'لا'
-                        , btnClass: 'btn-blue'
-                    }
-                , }
-            , });
-        });
-
-    });
-
-</script>
-@endpush

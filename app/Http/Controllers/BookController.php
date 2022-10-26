@@ -17,6 +17,11 @@ class BookController extends Controller
         $this->book = $book;
     }
 
+    public function index()
+    {
+        $books = $this->book->with('media', 'locales')->orderBy('updated_at', "desc")->get();
+        return view('books.index', compact('books'));
+    }
 
 
     public function create()
@@ -51,7 +56,8 @@ class BookController extends Controller
             setLocales($record, $locales, $record->id);
             flash('Book created successfully')->success();
         });
-        return to_route('index');
+
+        return $this->index();
     }
 
     public function edit($id)
@@ -86,7 +92,7 @@ class BookController extends Controller
                     uploadImage($record, $image);
                 }
             }
-           
+
             $record->tags()->attach($request->tags);
 
             setLocales($record, $locales, $record->id);

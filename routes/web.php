@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
@@ -19,8 +20,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Auth::routes();
 
+Route::get("/", [BookController::class, 'index']);
 Route::controller(MainController::class)->group(function () {
-    Route::get('/',  'index')->name('index');
     Route::get('{lang}',  'toggleLang')->name('toggle-lang');
 });
 
@@ -29,7 +30,7 @@ Route::controller(MainController::class)->group(function () {
 
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::resource('books', \App\Http\Controllers\BookController::class);
+    Route::resource('books', BookController::class);
     Route::resource('orders', \App\Http\Controllers\OrderController::class);
 
     Route::delete('media/{id}', [MainController::class, 'destroyMedia'])->name('media.destroy');

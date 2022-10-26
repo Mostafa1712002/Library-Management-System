@@ -7,16 +7,11 @@ use App\Http\Controllers\Controller;
 class MainController extends Controller
 {
 
-    public function index()
-    {
-        return view('index');
-    }
-
-
     public function toggleLang($lang)
     {
         app()->setLocale($lang);
-        return view('index');
+        $books = \App\Models\Book::with('media', 'locales')->orderBy('updated_at', "desc")->get();
+        return view('books.index', compact('books'));
     }
 
     public function destroyMedia($id)
