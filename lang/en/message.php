@@ -22,4 +22,11 @@ return [
     "name_required" => "The name is required",
     "name_unique" => "The name must be unique",
     "added_successfully" => "Added successfully",
+    'login' => 'Login',
+    'register' => 'Register',
+    'logout' => 'Logout',
+    'email' => 'Email',
+    'password' => 'Password',
+    'remember_me' => 'Remember me',
+    
 ];
